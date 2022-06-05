@@ -15,6 +15,7 @@
       "@/tests/*": ["../tests/*"]
     }
   },
-  "include": ["src/**/*"],
-  "strict": true
+  "include": ["src", "tests"],
+  "strict": true,
+  "strictNullChecks": true
 }
