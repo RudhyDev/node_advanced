@@ -13,9 +13,9 @@
     "paths": {
       "@/*": ["*"],
       "@/tests/*": ["../tests/*"]
-    }
+    },
+    "strict": true
   },
-  "include": ["src", "tests"],
-  "strict": true,
-  "strictNullChecks": true
+  "include": ["src", "tests", "tests"]
+
 }
