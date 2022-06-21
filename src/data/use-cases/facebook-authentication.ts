@@ -6,8 +6,7 @@ import { CreateFacebookAccountRepository, LoadUserAccountRepository } from '../c
 export class FacebookAuthenticationUseCase {
   constructor(
     private readonly facebookApi: LoadFacebookUserApi,
-    private readonly loadUserAccountRepo: LoadUserAccountRepository,
-    private readonly createFacebookAccountRepo: CreateFacebookAccountRepository
+    private readonly userAccountRepo: LoadUserAccountRepository & CreateFacebookAccountRepository
 
   ) { }
 
@@ -15,8 +14,8 @@ export class FacebookAuthenticationUseCase {
     const fbData = await this.facebookApi.loadUser(parameters)
 
     if (fbData !== undefined) {
-      await this.loadUserAccountRepo.load({ email: fbData.email })
-      await this.createFacebookAccountRepo.createFromFacebook(fbData)
+      await this.userAccountRepo.load({ email: fbData.email })
+      await this.userAccountRepo.createFromFacebook(fbData)
     }
 
     return new AuthenticationError()
