@@ -14,12 +14,14 @@ describe('FacebookAuthenticationUseCase', () => {
 
   beforeEach(() => {
     loadFaceBookUserApi = mock()
+
     loadFaceBookUserApi.loadUser.mockResolvedValue({
-      name: 'any_facebook_name',
+      name: 'any_fb_name',
       email: 'any_facebook_email',
       facebookId: 'any_fb_id'
     })
     userAccountRepo = mock()
+    userAccountRepo.load.mockResolvedValue(undefined)
 
     sut = new FacebookAuthenticationUseCase(loadFaceBookUserApi, userAccountRepo)
   })
@@ -47,13 +49,11 @@ describe('FacebookAuthenticationUseCase', () => {
   })
 
   it('Should call CreateFacebookAccountRepo when LoadUserAccountApi returns undefined', async () => {
-    userAccountRepo.load.mockResolvedValueOnce(undefined)
-
     await sut.execute({ token })
 
     expect(userAccountRepo.createFromFacebook).toHaveBeenCalledWith({
       email: 'any_facebook_email',
-      name: 'any_facebook_name',
+      name: 'any_fb_name',
       facebookId: 'any_fb_id'
     })
     expect(userAccountRepo.createFromFacebook).toHaveBeenCalledTimes(1)
@@ -66,7 +66,7 @@ describe('FacebookAuthenticationUseCase', () => {
 
     expect(userAccountRepo.createFromFacebook).toHaveBeenCalledWith({
       email: 'any_facebook_email',
-      name: 'any_facebook_name',
+      name: 'any_fb_name',
       facebookId: 'any_fb_id'
     })
     expect(userAccountRepo.createFromFacebook).toHaveBeenCalledTimes(1)
@@ -84,6 +84,22 @@ describe('FacebookAuthenticationUseCase', () => {
     expect(userAccountRepo.updateWithFacebook).toHaveBeenCalledWith({
       id: 'any_id',
       name: 'any_name',
+      facebookId: 'any_fb_id'
+    })
+    expect(userAccountRepo.updateWithFacebook).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should update account name', async () => {
+    userAccountRepo.load.mockResolvedValueOnce({
+      id: 'any_id'
+
+    })
+
+    await sut.execute({ token })
+
+    expect(userAccountRepo.updateWithFacebook).toHaveBeenCalledWith({
+      id: 'any_id',
+      name: 'any_fb_name',
       facebookId: 'any_fb_id'
     })
     expect(userAccountRepo.updateWithFacebook).toHaveBeenCalledTimes(1)
