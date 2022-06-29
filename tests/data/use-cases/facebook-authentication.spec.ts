@@ -15,9 +15,10 @@ describe('FacebookAuthenticationUseCase', () => {
   let crypto: MockProxy<TokenGenerator>
   let userAccountRepo: MockProxy<LoadUserAccountRepository & SaveFacebookAccountRepository>
   let sut: FacebookAuthenticationUseCase
-  const token = 'any_token'
+  let token: string
 
-  beforeEach(() => {
+  beforeAll(() => {
+    token = 'any_token'
     facebookApi = mock()
 
     facebookApi.loadUser.mockResolvedValue({
@@ -25,11 +26,16 @@ describe('FacebookAuthenticationUseCase', () => {
       email: 'any_facebook_email',
       facebookId: 'any_fb_id'
     })
+
     userAccountRepo = mock()
     userAccountRepo.load.mockResolvedValue(undefined)
     userAccountRepo.saveWithFacebook.mockResolvedValue({ id: 'any_account_id' })
+
     crypto = mock()
     crypto.generateToken.mockResolvedValue('any_generated_token')
+  })
+
+  beforeEach(() => {
     sut = new FacebookAuthenticationUseCase(facebookApi, userAccountRepo, crypto) // aqui vc está injetando o mock no service
   })
 
