@@ -1,3 +1,4 @@
+import { AccessToken } from '@/domain/models/access-token'
 
 import { LoadFacebookUserApi } from '@/data/contracts/apis'
 import { SaveFacebookAccountRepository, LoadUserAccountRepository } from '@/data/contracts/repos'
@@ -66,7 +67,10 @@ describe('FacebookAuthenticationUseCase', () => {
   it('Should call TokenGenerator with correct params', async () => {
     await sut.execute({ token })
 
-    expect(crypto.generateToken).toHaveBeenCalledWith({ key: 'any_account_id' })
+    expect(crypto.generateToken).toHaveBeenCalledWith({
+      key: 'any_account_id',
+      expirationInMs: AccessToken.expirationInMs
+    })
     expect(crypto.generateToken).toHaveBeenCalledTimes(1)
   })
 })
